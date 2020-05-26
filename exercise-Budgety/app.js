@@ -23,13 +23,25 @@ var budgetController = (function() {
         totals: {
             exp: 0,
             inc: 0
-        }
+        },
+        budget: 0,
+        percentage: -1 // expense/income, -1 indicates if there is no value existing
     };
     
+    var calculateTotal = function(type) {
+        
+        var sum = 0;
+        data.allItems[type].forEach(function(currentValue) {
+            sum += currentValue.value;
+        });
+        
+        data.totals[type] = sum;
+    };
+
     return {
         addItem: function(type, des, val) {
             var lastItemID, newItem, ID;
-            
+
             // create new ID
             if (data.allItems[type].length > 0) {
                 // find the last item in the array and get its id.
@@ -38,23 +50,46 @@ var budgetController = (function() {
             } else {
                 ID = 0;
             }
-            
+
             // create item based on their type 'inc' or 'exp'
             if (type === 'exp') {
                 newItem = new Expense(ID, des, val);
             } else if (type === 'inc') {
                 newItem = new Income(ID, des, val);
             }
-            
+
             // add item to the correct array
             // type will be 'inc' or 'exp'
             data.allItems[type].push(newItem);
-    
-            // update the total
-            data.totals[type] += parseFloat(newItem.value);
-            
+
             // return the new element, because of changing the UI.
             return newItem;
+        },
+
+        calculateBudget: function() {
+            
+            // calculate totals
+            calculateTotal('inc');
+            calculateTotal('exp');
+            
+            // calculate income - expense
+            data.budget = data.totals.inc - data.totals.exp;
+            
+            // calculate the percentages.
+            if (data.totals.inc > 0) {
+                data.percentage = Math.round(data.totals.exp / data.totals.inc * 100);
+            } else {
+                data.percentage = -1;
+            }
+        },
+        
+        getBudget: function() {
+            return {
+                budget: data.budget,
+                totalInc: data.totals.inc,
+                totalExp: data.totals.exp,
+                percentage: data.percentage
+            }
         },
         
         // for debug, check the data structure
@@ -76,7 +111,7 @@ var UIController = (function() {
         inputBtn: '.add__btn', // the add button
         incomeContainer: '.income__list', // income list class
         expenseContainer: '.expenses__list' // expense list class
-        
+
     };
 
     return {
@@ -87,14 +122,14 @@ var UIController = (function() {
             return {
                 type : document.querySelector(DOMStrings.inputType).value,
                 description : document.querySelector(DOMStrings.inputDesc).value,
-                value : document.querySelector(DOMStrings.inputValue).value
+                value : parseFloat(document.querySelector(DOMStrings.inputValue).value) // convert string to float.
             };
         },
-        
-        // getting the new added item
+
+        // getting the new added item and add it to UI list
         addListItem: function(obj, type) {
             var html, newHtml, element;
-            
+
             // create html string with placeholder text
             if (type === 'inc') {
                 element = DOMStrings.incomeContainer;
@@ -103,32 +138,32 @@ var UIController = (function() {
                 element = DOMStrings.expenseContainer;
                 html = '<div class="item clearfix" id="expense-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
             }
-            
+
             // replace the placeholder text with some actual data
             newHtml = html.replace('%id%', obj.id);
             newHtml = newHtml.replace('%description%', obj.desc);
             newHtml = newHtml.replace('%value%', obj.value);
-            
+
             // insert html code into the DOM
             document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
         },
-        
+
         // clear the user input field to empty after user hits enter or 'save'
         clearField: function() {
             var fields, fieldsArr;
-            
+
             // querySelectorAll fetches the HTML elements that we want
             // and store them into a list
             fields = document.querySelectorAll(DOMStrings.inputDesc + ',' + DOMStrings.inputValue);
             // convert the list into an Array
             fieldsArr = Array.prototype.slice.call(fields);
-            
+
             // the elements of fields or fieldsArr are references which points to the same location
             // so we can set them to empty string "", to change the HTML (clear fields)
             fieldsArr.forEach(function(currentValue){
                 currentValue.value = "";
             });
-            
+
             // focus on the description field after saving.
             fieldsArr[0].focus();
         },
@@ -158,40 +193,43 @@ var controller = (function(budgetCtrl, UICtrl) {
             }
         });
     };
-    
-    var updateBudget = function() {
-        
-        // calculate the budget.
-        
-        
-        // return the budget
 
-        
+    var updateBudget = function() {
+
+        // calculate the budget.
+        budgetCtrl.calculateBudget();
+
+        // return the budget
+        var budget = budgetCtrl.getBudget();
+
         // display the budget.
         
-        
-        
+
+
     };
-    
-    
+
+
 
     var ctrlAddItem = function() {
         var input, newItem;
-        
+
         // get the field input data
         input = UICtrl.getInput();
+        
+        // only record with desc is not empty and value positive number can be saved
+        if (input.description !== "" && !isNaN(input.value) && input.value > 0) {
+            // add the item to the budget controller
+            newItem = budgetCtrl.addItem(input.type, input.description, input.value);
 
-        // add the item to the budget controller
-        newItem = budgetCtrl.addItem(input.type, input.description, input.value);
-        
-        // add the new item to the UI
-        UICtrl.addListItem(newItem, input.type);
-        
-        // clear the fields
-        UICtrl.clearField();
-        
-        
+            // add the new item to the UI
+            UICtrl.addListItem(newItem, input.type);
 
+            // clear the fields
+            UICtrl.clearField();
+
+            // calculate and update budget
+            updateBudget();
+        }
     };
 
     return {
