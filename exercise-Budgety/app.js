@@ -110,8 +110,11 @@ var UIController = (function() {
         inputValue: '.add__value', // value input field
         inputBtn: '.add__btn', // the add button
         incomeContainer: '.income__list', // income list class
-        expenseContainer: '.expenses__list' // expense list class
-
+        expenseContainer: '.expenses__list', // expense list class
+        budgetLabel: '.budget__value', // display budget label class
+        incomeLabel: '.budget__income--value', // display income class
+        expensesLabel: '.budget__expenses--value', // display expenses class
+        percentageLabel: '.budget__expenses--percentage' // display percentage class
     };
 
     return {
@@ -167,6 +170,19 @@ var UIController = (function() {
             // focus on the description field after saving.
             fieldsArr[0].focus();
         },
+        
+        displayBudget: function(obj) {
+              
+            document.querySelector(DOMStrings.budgetLabel).textContent = obj.budget;
+            document.querySelector(DOMStrings.incomeLabel).textContent = obj.totalInc;
+            document.querySelector(DOMStrings.expensesLabel).textContent = obj.totalExp;
+            if (obj.percentage !== -1) {
+                document.querySelector(DOMStrings.percentageLabel).textContent = obj.percentage + '%';
+            } else {
+                document.querySelector(DOMStrings.percentageLabel).textContent = 'n.a';
+            }
+            
+        },
 
         // return UI elements class.
         getDOMStrings: function() {
@@ -203,7 +219,7 @@ var controller = (function(budgetCtrl, UICtrl) {
         var budget = budgetCtrl.getBudget();
 
         // display the budget.
-        
+        UICtrl.displayBudget(budget);
 
 
     };
@@ -235,6 +251,13 @@ var controller = (function(budgetCtrl, UICtrl) {
     return {
         init: function() {
             console.log('Application has started.');
+            // init the page
+            UICtrl.displayBudget({
+                budget: 0,
+                totalInc: 0,
+                totalExp: 0,
+                percentage: -1
+            });
             setupEventListener();
         }
     }
