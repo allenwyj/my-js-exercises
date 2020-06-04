@@ -32,6 +32,7 @@ const controlSearch = async () => {
         searchView.renderResults(state.search.result);
     
     }
+    
 };
 
 elements.searchForm.addEventListener('submit', e => {
@@ -39,3 +40,15 @@ elements.searchForm.addEventListener('submit', e => {
     controlSearch();
 });
 
+elements.searchResPages.addEventListener('click', e => {
+    // monitor if the click can be traced back to 'btn-inline' class
+    const btn = e.target.closest('.btn-inline');
+    if (btn) {
+        // fetch our custom data through accessing variable 'goto'
+        const goToPage = parseInt(btn.dataset.goto, 10);
+        // clear the prev list and buttons
+        searchView.clearResults();
+        // reload the new page list
+        searchView.renderResults(state.search.result, goToPage);
+    }
+});
