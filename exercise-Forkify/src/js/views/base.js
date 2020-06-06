@@ -4,7 +4,9 @@ export const elements = {
     searchForm: document.querySelector('.search'),
     searchResultList: document.querySelector('.results__list'),
     searchRes: document.querySelector('.results'),
-    searchResPages: document.querySelector('.results__pages')
+    searchResPages: document.querySelector('.results__pages'),
+    recipeDetail: document.querySelector('.recipe'),
+    shoppingList: document.querySelector('.shopping__list')
 };
 
 // containing element class name.

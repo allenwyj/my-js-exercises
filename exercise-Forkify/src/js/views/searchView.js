@@ -13,6 +13,15 @@ export const clearResults = () => {
     elements.searchResPages.innerHTML = '';
 };
 
+export const hightlightSelected = id => {
+    const resultsArr = Array.from(document.querySelectorAll('.results__link'));
+    resultsArr.forEach(el => {
+        el.classList.remove('results__link--active');
+    });
+    // Get the <a> element in the document that has a "href" attribute
+    document.querySelector(`a[href*="#${id}"]`).classList.add('results__link--active');
+};
+
 /**
  *  Limit the title of recipe to 17 char, so it won't break the layout
  */
@@ -32,7 +41,7 @@ const limitRecipeTitle = (title, limit = 17) => {
     return title;
 };
 
-const renderRecipe = recipe => {
+const createRecipeListItem = recipe => {
     const markup = `
         <li>
             <a class="results__link" href="#${recipe.recipe_id}">
@@ -74,7 +83,7 @@ const createButton = (page, type) => `
  * @param {number} numResults - the number of results needed to be paginated
  * @param {number} resPerPage - the number of results for each page
  */
-const renderButtons = (page, numResults, resPerPage) => {
+const displayButtons = (page, numResults, resPerPage) => {
     const pages = Math.ceil(numResults / resPerPage);
     let button;
 
@@ -96,14 +105,14 @@ const renderButtons = (page, numResults, resPerPage) => {
 };
 
 // loading 10 resources per page by default.
-export const renderResults = (recipes, page = 1, resPerPage = 10) => {
+export const displayResults = (recipes, page = 1, resPerPage = 10) => {
 
     const start = (page - 1) * resPerPage;
     const end = page * resPerPage;
 
     // calling renderRecipe function to create HTML element for each recipe
-    recipes.slice(start, end).forEach(renderRecipe);
+    recipes.slice(start, end).forEach(createRecipeListItem);
 
     // generate the pagination button(s) based on the page num
-    renderButtons(page, recipes.length, resPerPage);
+    displayButtons(page, recipes.length, resPerPage);
 };
