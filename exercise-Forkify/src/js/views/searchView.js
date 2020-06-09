@@ -19,13 +19,13 @@ export const hightlightSelected = id => {
         el.classList.remove('results__link--active');
     });
     // Get the <a> element in the document that has a "href" attribute
-    document.querySelector(`a[href*="#${id}"]`).classList.add('results__link--active');
+    document.querySelector(`.results__link[href*="#${id}"]`).classList.add('results__link--active');
 };
 
 /**
  *  Limit the title of recipe to 17 char, so it won't break the layout
  */
-const limitRecipeTitle = (title, limit = 17) => {
+export const limitRecipeTitle = (title, limit = 17) => {
     const newTitle = [];
     if (title.length > limit) {
         title.split(' ').reduce((acc, cur) => {

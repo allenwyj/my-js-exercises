@@ -22,7 +22,8 @@ const formatNumberToFraction = num => {
     if (num) {
         // spliting num to integer and decimal parts.
         // 3.5 => int = 3, dec = 5
-        const [int, dec] = num.toString().split('.').map(el => parseInt(el, 10));
+        const newNum = Math.round(num * 10000) / 10000;
+        const [int, dec] = newNum.toString().split('.').map(el => parseInt(el, 10));
 
         // if there is no decimal part, simply return the num.
         if (!dec) {
@@ -59,7 +60,7 @@ export const updateIngredientsQtyOnUI = recipe => {
     });
 };
 
-export const displayRecipeSection = recipe => {
+export const displayRecipeSection = (recipe, isLiked) => {
     const markup = `
             <figure class="recipe__fig">
                 <img src="${recipe.img}" alt="${recipe.title}" class="recipe__img">
@@ -98,7 +99,7 @@ export const displayRecipeSection = recipe => {
                 </div>
                 <button class="recipe__love">
                     <svg class="header__likes">
-                        <use href="img/icons.svg#icon-heart-outlined"></use>
+                        <use href="img/icons.svg#icon-heart${isLiked ? '' : '-outlined'}"></use>
                     </svg>
                 </button>
             </div>
