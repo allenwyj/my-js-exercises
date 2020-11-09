@@ -7,4 +7,9 @@ This folder contains the exercises that I performed when I was learning JavaScri
 https://allenwyj.github.io/my-js-exercises/exercise-Budgety/
 
 ## Recipe App
+
 https://allenwyj.github.io/my-js-exercises/exercise-Forkify/dist/
+
+## Rolling Dice
+
+https://allenwyj.github.io/my-js-exercises/exercise-DOM-game/
