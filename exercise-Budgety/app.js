@@ -328,7 +328,6 @@ var UIController = (function() {
             // change the selection, desc, value based on the type.
             // the second parameter in callback function is optional
             nodeListForEach(fields, function(currentValue) {
-                console.log(arguments);
                 currentValue.classList.toggle('red-focus');
             });
 
@@ -346,7 +345,7 @@ var UIController = (function() {
 // App Controller
 var controller = (function(budgetCtrl, UICtrl) {
 
-    // put all event listener inside a function.
+    // put all event listeners inside a function.
     var setupEventListener = function() {
         // getting ui element class name.
         var DOM = UICtrl.getDOMStrings();
@@ -422,6 +421,7 @@ var controller = (function(budgetCtrl, UICtrl) {
     var ctrlDeleteItem = function(event) {
         var itemID, type, ID;
 
+        console.log(event.target);
         // getting the id from the 4 levels uppers element id
         itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
 
@@ -448,7 +448,6 @@ var controller = (function(budgetCtrl, UICtrl) {
 
     return {
         init: function() {
-            console.log('Application has started.');
 
             // init the page
             UICtrl.displayMonth();
