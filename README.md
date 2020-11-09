@@ -5,3 +5,6 @@ This folder contains the exercises that I performed when I was learning JavaScri
 ## Budgety
 
 https://allenwyj.github.io/my-js-exercises/exercise-Budgety/
+
+## Recipe App
+https://allenwyj.github.io/my-js-exercises/exercise-Forkify/dist/
