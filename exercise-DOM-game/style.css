@@ -1,6 +1,10 @@
 /**********************************************
 *** GENERAL
 **********************************************/
+#game-rules {
+  margin-top: 40px;
+  margin-left: 40px;
+}
 
 .final-score {
   position: absolute;
